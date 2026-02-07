@@ -137,8 +137,26 @@
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = (e) => {
-            const json = JSON.parse(e.target.result);
-            db.ref('maintenanceStateHE/cloudRawData').set(json);
+            try {
+                const json = JSON.parse(e.target.result);
+                
+                // 1. Rohdaten speichern
+                db.ref('maintenanceStateHE/cloudRawData').set(json);
+
+                // 2. Automatischer Abgleich: Zyklen initial anpassen, falls nötig
+                // Das verhindert, dass Maschinen mit 600k Stand bei Zyklus 0 starten
+                json.forEach(m => {
+                    const recommendedCycle = Math.floor(m.Parts / INTERVAL);
+                    // Wir setzen den Zyklus nur, wenn noch keiner existiert
+                    db.ref(`maintenanceStateHE/extraCycles/${m.StationNo}`).transaction((current) => {
+                        return (current === null) ? recommendedCycle : current;
+                    });
+                });
+
+                alert("Daten erfolgreich importiert und Zyklen optimiert!");
+            } catch (err) {
+                alert("Fehler beim Lesen der JSON: " + err.message);
+            }
         };
         reader.readAsText(file);
     }
