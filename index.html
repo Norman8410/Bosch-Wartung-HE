@@ -20,7 +20,6 @@
 
         body { font-family: 'Segoe UI', sans-serif; background: var(--bosch-gray); margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        /* Top Bar & Menu */
         .top-bar { 
             height: 45px; width: 100%; 
             background: linear-gradient(90deg, #d50000 0%, #d50000 25%, #003a6c 25%, #003a6c 50%, #00b5e2 50%, #00b5e2 75%, #008a4f 75%, #008a4f 100%); 
@@ -31,7 +30,6 @@
         .menu-btn:hover { opacity: 0.7; }
         .bar-title { font-size: 19px; font-weight: 600; }
 
-        /* Hamburger Drawer */
         .nav-drawer { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.3); transition: 0.3s ease-in-out; z-index: 3000; padding-top: 20px; }
         .nav-drawer.open { left: 0; }
         .drawer-header { padding: 20px; border-bottom: 2px solid var(--bosch-gray); margin-bottom: 10px; }
@@ -69,8 +67,9 @@
         <div class="drawer-header">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Bosch-logo.svg/1024px-Bosch-logo.svg.png" width="120" alt="Bosch">
         </div>
-        <a href="#" class="nav-item active">⚙️ HE Wartung (Aktiv)</a>
         <a href="https://norman8410.github.io/agie-wartung/" class="nav-item">⚡ Agie Wartung</a>
+        <a href="https://norman8410.github.io/unotron-wartung/" class="nav-item">🧪 Unotron</a>
+        <a href="#" class="nav-item active">⚙️ HE Wartung (Aktiv)</a>
         <div style="position: absolute; bottom: 20px; left: 25px; font-size: 11px; color: #999;">
             Verantwortlich: Norman Schultheis
         </div>
@@ -195,7 +194,7 @@
 
         async function resetWP(id) { if(confirm("Zähler-Korrektur auf 0 setzen?")) db.ref(`maintenanceStateHE/manualOffsets/${id}`).set(0); }
 
-function renderChart(data) {
+        function renderChart(data) {
             const ctx = document.getElementById('mainChart').getContext('2d');
             if(chart) chart.destroy();
             chart = new Chart(ctx, {
@@ -214,7 +213,6 @@ function renderChart(data) {
                     maintainAspectRatio: false,
                     plugins: { 
                         legend: { display: false },
-                        // DER AUSFÜHRLICHE TOOLTIP:
                         tooltip: {
                             backgroundColor: 'rgba(255, 255, 255, 0.95)',
                             titleColor: '#d50000',
@@ -227,9 +225,7 @@ function renderChart(data) {
                             titleFont: { size: 14, weight: 'bold' },
                             bodyFont: { size: 13 },
                             callbacks: {
-                                title: function(context) {
-                                    return "Maschine: " + context[0].label;
-                                },
+                                title: function(context) { return "Maschine: " + context[0].label; },
                                 label: function(context) {
                                     const d = data[context.dataIndex];
                                     return [
@@ -255,16 +251,10 @@ function renderChart(data) {
                     scales: {
                         y: {
                             beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Reststückzahl bis Wartung',
-                                font: { weight: 'bold' }
-                            }
+                            title: { display: true, text: 'Reststückzahl bis Wartung', font: { weight: 'bold' } }
                         }
                     },
-                    layout: {
-                        padding: { top: 60, bottom: 10 }
-                    }
+                    layout: { padding: { top: 60, bottom: 10 } }
                 }
             });
         }
